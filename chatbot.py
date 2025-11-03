@@ -2,18 +2,18 @@ import streamlit as st
 from transformers import pipeline
 
 #provides UI
-st.set_page_config(page_title="Chatbot") #page configuration
+st.set_page_config(page_title="GPT-2 Chatbot", page_icon="🤖", layout="centered") #page configuration
 
 def load_text_generator():
-  text_generator = pipeline("text-generation", model="gpt2")
+  text_generator = pipeline("text-generation", model="openai-community/gpt2")
   text_generator.tokenizer.pad_token = text_generator.tokenizer.eos_token
   return text_generator
 
-SYSTEM_INSTRUCTIONS = (
-  "You are a helpful assistant for software Engineering",
-  "Answer concisely and to the point",
-  "Use markdown to format your answers",
-  "Use code blocks to format your answers",
+SYSTEM_INSTRUCTION = (
+  "You are a helpful assistant for software Engineering.\n"
+  "Answer concisely and to the point.\n"
+  "Use markdown to format your answers.\n"
+  "Use code blocks to format your answers.\n\n"
 
 )
 
@@ -23,8 +23,8 @@ def build_conversation_prompt(chat_history, user_question):
   for previous_question, previous_answer in chat_history:
     formated_conversation.append(f"Question: {previous_question}\nAnswer: {previous_answer}\n")
   
-  formated_conversation.append(f"Question: {user_question}\nAnswer: ")
-  return SYSTEM_INSTRUCTIONS + "\n".join(formated_conversation)
+  formated_conversation.append(f"Question: {user_question}\nAnswer:")
+  return SYSTEM_INSTRUCTION + "\n".join(formated_conversation)
 
 st.title("Chatbot UI")
 st.caption("Ask me anything about software Engineering")
@@ -34,6 +34,8 @@ with st.sidebar:
   st.header("Model Controls/Config")
   max_new_tokens = st.slider("Max New Tokens", min_value=10, max_value=300, value=50, step=10)
   temperature = st.slider("Temperature", min_value=0.1, max_value=1.0, value=0.5, step=0.1)
+  top_p = st.slider("Top-p sampling", 0.1, 1.0, 0.9, 0.05)
+  repetition_penalty = st.slider("Repetition penalty", 1.0, 2.0, 1.15, 0.05)
 
   #Clear chat history
   if st.button("Clear Chat"):
@@ -68,9 +70,9 @@ if user_input:
     )[0]['generated_text']
 
     #Extract the model answer
-    generated_answer = generation_output.split("Answer: ")[-1].strip()
+    generated_answer = generation_output.split("Answer:")[-1].strip()
     if "Question: " in generated_answer:
-      generated_answer = generated_answer.split("Question: ")[0].strip()
+      generated_answer = generated_answer.split("Question:")[0].strip()
 
   #Displaying and storing chatbot response
   st.chat_message("assistant").markdown(generated_answer)
