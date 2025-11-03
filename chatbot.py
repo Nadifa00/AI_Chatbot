@@ -32,7 +32,7 @@ st.caption("Ask me anything about software Engineering")
 #Sidebar
 with st.sidebar:
   st.header("Model Controls/Config")
-  max_new_tokens = st.slider("Max New Tokens", min_value=10, max_value=300, value=50, step=10)
+  max_new_tokens = st.slider("Max New Tokens", min_value=20, max_value=300, value=120, step=10)
   temperature = st.slider("Temperature", min_value=0.1, max_value=1.0, value=0.5, step=0.1)
   top_p = st.slider("Top-p sampling", 0.1, 1.0, 0.9, 0.05)
   repetition_penalty = st.slider("Repetition penalty", 1.0, 2.0, 1.15, 0.05)
