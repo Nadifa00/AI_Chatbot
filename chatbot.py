@@ -68,8 +68,8 @@ if user_input:
 
     #Extract the model answer
     generated_answer = generation_output.split("Answer: ")[-1].strip()
-    if "Question: " in generation_output:
-      generated_answer = generation_output.split("Question: ")[0].strip()
+    if "Question: " in generated_answer:
+      generated_answer = generated_answer.split("Question: ")[0].strip()
 
 #Displaying and storing chatbot response
 st.chat_message("assistant").markdown(generated_answer)
